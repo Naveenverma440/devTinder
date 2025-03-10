@@ -15,9 +15,20 @@ const app = express();
 //   res.send('hello world'); 
 // })
 
+// app.get('/user', (req, res) => {
+//   res.send({"name":"naveen","age":23});
+// })
+
+// app.get('/user/:userId/:userName', (req, res) => {
+//   console.log(req.params);
+//   res.send({"name":"naveen","age":23});
+// })
+
 app.get('/user', (req, res) => {
+  console.log(req.query);
   res.send({"name":"naveen","age":23});
 })
+
 
 app.post('/user', (req, res) => {
   res.send("data saved");
