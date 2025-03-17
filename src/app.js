@@ -1,4 +1,5 @@
 const express = require('express');
+const {adminAuth} = require('./middlewares/auth');
 
 const app = express();
 // app.use("/",(req, res) => {
@@ -8,9 +9,8 @@ const app = express();
 //     res.send('hello naveen'); 
 //   })
 
-  app.use("/test",(req, res) => {
-    res.send('hello naveen'); 
-  })
+  app.use("/admin", adminAuth
+)
 // app.use((req, res) => {
 //   res.send('hello world'); 
 // })
@@ -24,13 +24,13 @@ const app = express();
 //   res.send({"name":"naveen","age":23});
 // })
 
-app.get('/user', (req, res) => {
+app.get('/admin/getalldata', (req, res) => {
   console.log(req.query);
   res.send({"name":"naveen","age":23});
 })
 
 
-app.post('/user', (req, res) => {
+app.post('/admin/deleteuser', (req, res) => {
   res.send("data saved");
 })
 
