@@ -43,11 +43,9 @@ app.post("/login", async (req, res) => {
       throw new Error("Email id is not present in DB");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password)
     if (isPasswordValid) {
-      const token = await jwt.sign({ _id: user._id }, "DEV@Naveen787", {
-        expiresIn: "1d",
-      });
+      const token = await user.getJWT()
       console.log("JWT token....", token);
 
       res.cookie("token", token,{httpOnly:true});
