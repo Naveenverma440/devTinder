@@ -10,70 +10,17 @@ const { userAuth } = require("./middlewares/auth");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.post("/signup", async (req, res) => {
-  console.log("reqqqqqqqqqqqqqqqqq", req.body);
-  try {
-    //validation of data
-    validateSignUpData(req);
-    //Encrypt the password
-    const { firstName, lastName, emailId, password } = req.body;
-    const passwordHash = await bcrypt.hash(password, 10);
-    console.log(passwordHash);
 
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: passwordHash,
-    });
-    await user.save();
-    res.send("user created");
-  } catch (err) {
-    // res.status(400).send("Error :-", err.message);
-    res.send("Error:" + err.message);
-  }
-});
 
-app.post("/login", async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
-    const user = await User.findOne({ emailId: emailId });
+const authRouter = require("./routes/auth")
+const profileRouterRouter = require("./routes/profile")
+const requestRouter = require("./routes/requests")
 
-    if (!user) {
-      throw new Error("Email id is not present in DB");
-    }
+app.use("/",authRouter);
+app.use("/",profileRouterRouter);
+app.use("/",requestRouter);
 
-    const isPasswordValid = await user.validatePassword(password)
-    if (isPasswordValid) {
-      const token = await user.getJWT()
-      console.log("JWT token....", token);
 
-      res.cookie("token", token,{httpOnly:true});
-      res.send("Login sucessfull!");
-    } else {
-      throw new Error("password not valid");
-    }
-  } catch (err) {
-    res.status(400).send("Error:" + err.message);
-  }
-});
-
-app.post("/profile", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    console.log("qqqqqqqqqqqqqqqqq");
-    res.send(user);
-  } catch (err) {
-    res.status(400).send("Error:" + err.message);
-  }
-});
-
-app.post("/sendConnectionRequest", userAuth, async (req, res) => {
-  const user = req.user;
-  console.log("sending connection request");
-
-  res.send(user.firstName + " sent the connection request!");
-});
 
 //get user by email
 app.get("/user", userAuth, async (req, res) => {
